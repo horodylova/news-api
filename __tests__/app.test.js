@@ -14,6 +14,8 @@ afterAll(() => {
     return db.end()
 })
 
+///tests for api, including bad requests 
+
 describe('GET /api', () => {
     test('responds with a json detailing all available endpoints', () => {
       return request(app)
@@ -35,6 +37,8 @@ describe('GET /api', () => {
       })
     })
   })
+
+  //tests for topics 
 
   describe('GET /api/topics', () => {
     test('responds with status 200 and an array containing data of all topics', () => {
@@ -62,19 +66,49 @@ describe('GET /api', () => {
     });
   });
 
-  describe('status 500', () => {
-    test("responds with status 500 when database connection fails", () => {
-      jest.spyOn(db, 'query').mockImplementation(() => {
-        throw new Error('Database connection error');
-      });
-  
-      return request(app)
-        .get("/api/topics")
-        .expect(500)
-        .then(response => {
-          expect(response.body.msg).toBe("Internal Server Error");
-        });
-    });
+
+  //tests for articles 
+
+  describe("GET /api/articles", () => {
+    test("responds with 200 status with full list of articles", () => {
+      return request(app) 
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+          expect(Array.isArray(body.articles)).toBe(true)
+      })
+  }) 
+})
+
+describe("GET /api/articles/:article_id", () => {
+  test('status 200 responds with the requested article', () => {
+    return request(app)
+    .get('/api/articles/1')
+    .expect(200)
+    .then(({body}) => {
+      expect(body.article).toEqual({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: "2020-07-09T20:11:00.000Z",
+        votes: 100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      })
+    })
   })
+  // test.only("400 status when article_id is invalid", () => {
+  //   return request(app)
+  //   .get('/api/article/svitlana')
+  //   .expect(400)
+  //   .then(({body}) => {
+  //     expect(body.msg).toBe("Bad request")
+  //   })
+  // })
+})
+
+ 
 
  

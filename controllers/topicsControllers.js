@@ -10,4 +10,6 @@ function getTopics (request, response, next) {
     })
 }
 
+
+
 module.exports = { getTopics }
