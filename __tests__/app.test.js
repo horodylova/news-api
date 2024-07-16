@@ -4,7 +4,9 @@ const app = require('../app');
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index")
-const endpoints = require("../endpoints.json")
+const endpoints = require("../endpoints.json");
+require("jest-sorted");
+
 
 beforeEach(() => {
     return seed(data)
@@ -117,6 +119,41 @@ describe("GET /api/articles/:article_id", () => {
       expect(body.msg).toBe("Not Found")
     })
    })
+})
+
+describe('sorting the articles', () => {
+  test("the articles should be sorted by date in descending order", () => {
+      return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body}) => {
+        expect(body.articles).toBeSortedBy("created_at", {descending:true})
+      })
+  })
+  test(" there should not be a body property present on any of the article objects", () => {
+      return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({body}) => {
+        expect(body.articles.body).toBeUndefined()
+      })
+  })
+  test('responds with 400 when passed an invalid sort_by query', () => {
+    return request(app)
+      .get('/api/articles?sort_by=invalid-query')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid Query');
+      });
+  });
+  test("responds 200 and sorted by valid query", () => {
+    return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy("author");
+        });
+});
 })
 
  

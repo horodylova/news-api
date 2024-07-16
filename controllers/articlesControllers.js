@@ -2,11 +2,27 @@ const { selectAllArticles, fetchArticleById } = require('../models/articlesModel
 
 
 function getAllArticles(request, response, next) {
-    selectAllArticles()
+
+    
+    const {sort_by} = request.query
+
+    const validQueries = ['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'article_img_url', 'comment_count']
+
+    const sortBy = sort_by || 'created_at';
+
+    if (!validQueries.includes(sortBy)) {
+        return next({ status: 400, msg: "Invalid Query" });
+    }
+    
+    selectAllArticles(sort_by)
     .then((articles) => {
+
         response.status(200)
         .send({articles})
-    }).catch(next)
+        
+    }).catch((error) => {
+        next(error)
+    })
 }
 
 function getArticleById (request, response, next) {

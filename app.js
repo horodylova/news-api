@@ -35,6 +35,7 @@ app.use((req, res, next) => {
     if (err.status) {
       return res.status(err.status).send({ msg: err.msg });
     }
+    console.log('500 cought');
     res.status(500).send({ msg: 'Internal Server Error' });
   });
 

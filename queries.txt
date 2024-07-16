@@ -1,0 +1,36 @@
+SELECT articles.author, articles.title, articles.article_id, articles.created_at, articles.votes, articles.article_img_url FROM articles;
+
+CREATE INDEX idx_comments_body
+ON comments (body);
+
+
+SELECT COUNT(*) AS comment_count
+FROM comments
+WHERE articles.article_id = comments.article_id;
+
+
+SELECT articles.author, articles.title, articles.article_id, articles.created_at, articles.votes, articles.article_img_url, 
+COUNT(body.comment_id) 
+AS comment_count
+FROM articles
+LEFT JOIN comments 
+ON articles.article_id = comments.article_id;
+
+
+SELECT 
+            articles.author, 
+            articles.title, 
+            articles.article_id, 
+            articles.created_at, 
+            articles.votes, 
+            articles.article_img_url,
+            articles.topic,
+
+            COUNT(comments.comment_id) AS comment_count
+            
+        FROM articles
+        LEFT JOIN comments ON articles.article_id = comments.article_id
+        GROUP BY articles.author, articles.title, articles.article_id, articles.created_at, articles.votes, articles.article_img_url, articles.topic
+        ORDER BY ${sort_by} DESC;
+
+comment_count
