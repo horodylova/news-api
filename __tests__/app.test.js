@@ -17,15 +17,17 @@ afterAll(() => {
 ///tests for api, including bad requests 
 
 describe('GET /api', () => {
-    test('responds with a json detailing all available endpoints', () => {
-      return request(app)
-        .get('/api')
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.endpoints).toEqual(endpoints);
-        });
-    });
+  test('responds with a json detailing all available endpoints', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.endpoints).toEqual(endpoints);
+      });
   });
+});
+
+
 
   describe("invalid endpoint", () => {
     test("responds with a 404 status and an arror message ehen given an endpoint that does nor exist", () => {
