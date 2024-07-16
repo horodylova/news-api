@@ -15,18 +15,21 @@ app.get("/api/articles", getAllArticles)
 
 app.get("/api/articles/:article_id", getArticleById)
 
+app.use((err, req, res, next) => {
+ 
+  if (err.code === '22P02' || err.code === '23502' || err.code === '23502') {
+    return res.status(400).send({ msg: 'Bad request' });
+  }
+
+  next(err);
+});
+
 app.use((req, res, next) => {
+
     res.status(404).send({ message: 'Not Found' });
   });
 
-  app.use((err, req, res, next) => {
-    console.log(err);
-    if (err.code === '22P02' || err.code === '23502' || err.code === '23502') {
-      return res.status(400).send({ msg: 'Bad request' });
-    }
-  
-    next(err);
-  });
+ 
   
   app.use((err, req, res, next) => {
     if (err.status) {

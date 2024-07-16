@@ -99,14 +99,22 @@ describe("GET /api/articles/:article_id", () => {
       })
     })
   })
-  // test.only("400 status when article_id is invalid", () => {
-  //   return request(app)
-  //   .get('/api/article/svitlana')
-  //   .expect(400)
-  //   .then(({body}) => {
-  //     expect(body.msg).toBe("Bad request")
-  //   })
-  // })
+  test("400 status when article_id is invalid", () => {
+    return request(app)
+    .get('/api/articles/svitlana')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  })
+   test('404 status when article_id is valid but does not exist', () => {
+    return request(app)
+    .get('/api/articles/999')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+   })
 })
 
  
