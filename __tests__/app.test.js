@@ -17,15 +17,17 @@ afterAll(() => {
 ///tests for api, including bad requests 
 
 describe('GET /api', () => {
-    test('responds with a json detailing all available endpoints', () => {
-      return request(app)
-        .get('/api')
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.endpoints).toEqual(endpoints);
-        });
-    });
+  test('responds with a json detailing all available endpoints', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.endpoints).toEqual(endpoints);
+      });
   });
+});
+
+
 
   describe("invalid endpoint", () => {
     test("responds with a 404 status and an arror message ehen given an endpoint that does nor exist", () => {
@@ -99,14 +101,22 @@ describe("GET /api/articles/:article_id", () => {
       })
     })
   })
-  // test.only("400 status when article_id is invalid", () => {
-  //   return request(app)
-  //   .get('/api/article/svitlana')
-  //   .expect(400)
-  //   .then(({body}) => {
-  //     expect(body.msg).toBe("Bad request")
-  //   })
-  // })
+  test("400 status when article_id is invalid", () => {
+    return request(app)
+    .get('/api/articles/svitlana')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  })
+   test('404 status when article_id is valid but does not exist', () => {
+    return request(app)
+    .get('/api/articles/999')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+   })
 })
 
  
