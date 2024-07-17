@@ -108,7 +108,7 @@ describe("GET /api/articles/:article_id", () => {
     .get('/api/articles/svitlana')
     .expect(400)
     .then(({body}) => {
-      expect(body.msg).toBe("Bad request")
+      expect(body.msg).toBe("Bad Request")
     })
   })
    test('404 status when article_id is valid but does not exist', () => {
@@ -156,6 +156,62 @@ describe('sorting the articles', () => {
 });
 })
 
- 
+ //tests for comments 
+
+ describe("GET comments for the article", () => {
+  test("Responds with an array of comments for the given article_id", () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeInstanceOf(Array);
+        body.comments.forEach((comment) => {
+          expect(comment).toEqual(expect.objectContaining({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          }));
+        });
+      });
+  });
+  test("Comments should be served with the most recent comments first", () => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then(({body}) => {
+      expect(body.comments).toBeSortedBy("created_at", {descending:true})
+    })
+  })
+  test("returns an empty array and 200 status if article has no comments", () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(0);
+      });
+  });
+  test("returns 404 Not Found if no article but valid request", () => {
+    return request(app)
+    .get('/api/articles/99/comments')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+  })
+  test("returns 400 Bad Request if article_id is not valid", () => {
+      return request(app)
+      .get('/api/articles/no_valid_query/comments')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("Bad Request")
+      })
+  })
+});
+
+
+// Comments should be served with the most recent comments first.
 
  

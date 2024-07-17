@@ -25,8 +25,11 @@ function getAllArticles(request, response, next) {
     })
 }
 
+
+ 
 function getArticleById (request, response, next) {
     const {article_id} = request.params;
+    
     if(Number.isInteger) {
         fetchArticleById(article_id)
     .then((article) => {
@@ -34,7 +37,7 @@ function getArticleById (request, response, next) {
     }).catch(next)
     }
     else{
-     return res.status(400).send({ msg: 'Bad request' });
+     return response.status(400).send({ msg: 'Bad Request' });
 
     }
 }
