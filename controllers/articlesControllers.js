@@ -1,4 +1,4 @@
-const { selectAllArticles, fetchArticleById } = require('../models/articlesModels')
+const { selectAllArticles, fetchArticleById , updateArticleVotes } = require('../models/articlesModels')
 
 
 function getAllArticles(request, response, next) {
@@ -42,4 +42,20 @@ function getArticleById (request, response, next) {
     }
 }
 
-module.exports = { getAllArticles , getArticleById}; 
+function patchArticle(req, res, next) {
+    const { article_id } = req.params;
+    const { inc_votes } = req.body;
+  
+    updateArticleVotes(article_id, inc_votes)
+      .then((updatedArticle) => {
+        if (!updatedArticle) {
+          return res.status(404).send({ msg: 'Not Found' });
+        }
+        res.status(200).send({ article: updatedArticle });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  }
+
+module.exports = { getAllArticles , getArticleById, patchArticle}; 
