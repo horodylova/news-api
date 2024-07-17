@@ -1,5 +1,5 @@
-const { selectComments , postCommentModel } = require("../models/commentsModels");
-const {checkArticleExists, checkUserExists } = require("../models/checkcategoryExists");
+const { selectComments , postCommentModel , deleteCommentModel} = require("../models/commentsModels");
+const {checkArticleExists, checkUserExists, checkCommentExists } = require("../models/checkcategoryExists");
 
 function getComments(request, response, next) {
   const { article_id } = request.params;
@@ -41,5 +41,24 @@ function postComment(request, response, next) {
      });
  }
 
-module.exports = { getComments , postComment };
+ function deleteComment (request, response, next) {
+
+  const { comment_id } = request.params;
+  
+  checkCommentExists(comment_id) 
+  .then((commentExists) => {
+    if (!commentExists) {
+      return Promise.reject({ status: 404, msg: 'Not Found' });
+    }
+    return deleteCommentModel(comment_id)
+  }).then(() => {
+    response.status(204).send()
+  })
+  .catch((error) => {
+    next(error)
+  })
+
+ }
+
+module.exports = { getComments , postComment, deleteComment };
 
