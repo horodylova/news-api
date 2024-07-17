@@ -212,6 +212,44 @@ describe('sorting the articles', () => {
 });
 
 
-// Comments should be served with the most recent comments first.
+//tests for posting comments 
 
+describe("POST comments", () => {
+  test("adds comment to the article and responds with the posted comment by registered user", () => {
+    //arr 
+    const newComment = {
+      author: 'icellusedkars',
+      body: 'My first comment'
+    }
+    //act 
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(expect.objectContaining({
+          comment_id: expect.any(Number),
+          body: 'My first comment',
+          author: 'icellusedkars',
+          article_id: 1,
+          created_at: expect.any(String),
+          votes: 0
+        }));
+      });
+  });
+  test("returns 403 status when non-registered user wants to add comment to article", () => {
+    //arr 
+    const newComment = {
+      author: 'Svitlana',
+      body: 'My first comment'
+    }
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment)
+    .expect(403)
+    .then(({body}) => {
+      expect(body.msg).toBe("The client doesn't have permission to perform the action.")
+    })
+  })
+})
  

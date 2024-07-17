@@ -14,11 +14,27 @@ function selectComments(article_id) {
     ORDER BY created_at DESC;`,
     [article_id]
   ).then((result) => {
-    // if (result.rows.length === 0) {
-    //   return Promise.reject({ status: 404, msg: 'Not Found' });
-    // }
+   
     return result.rows;
   });
 }
 
-module.exports = { selectComments };
+function postCommentModel(body, author, article_id ) {
+  
+  return db
+  .query(`INSERT INTO comments 
+  (body, author, article_id, created_at, votes) 
+  VALUES ($1, $2, $3, NOW(), 0) 
+  RETURNING *`, 
+   [body, author, article_id]
+   )
+  .then((result) => {
+  
+    return result.rows[0]; 
+  }).catch((error) => {
+    next(error)
+  });
+}
+
+module.exports = { selectComments, postCommentModel };
+
