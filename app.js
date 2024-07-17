@@ -9,6 +9,7 @@ const {
   postComment,
   patchArticle,
   deleteComment,
+  getUsers
 } = require("./controllers");
 
 app.use(express.json());
@@ -25,11 +26,14 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles/:article_id/comments", getComments);
 
+app.get("/api/users", getUsers)
+
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02" || err.code === "23502" || err.code === "23502") {

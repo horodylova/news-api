@@ -60,7 +60,7 @@
         }
       ]
     }
-  }, 
+  },
   "POST /api/articles/:article_id/comments": {
     "description": "adds a comment to the specified article",
     "pathParameters": ["article_id"],
@@ -78,7 +78,18 @@
         "votes": 0
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment by comment_id",
+    "pathParameters": ["comment_id"],
+    "responses": {
+      "204": "No Content",
+      "404": {
+        "description": "Comment not found",
+        "exampleResponse": {
+          "msg": "Not Found"
+        }
+      }
+    }
   }
 }
-
-
