@@ -293,3 +293,21 @@ describe("PATCH /api/articles/:article_id", () => {
     })
   })
 })
+
+//tests for deleting the comment 
+
+describe("DELETE the comment", () => {
+  test("deletes the comment with status 204", () => {
+    return request(app)
+    .delete('/api/comments/1')
+    .expect(204)
+  })
+  test("returns 404 if comment does not exist", () => {
+    return request(app)
+    .delete('/api/comments/999999')
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not Found');
+    });
+  })
+})

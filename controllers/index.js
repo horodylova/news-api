@@ -4,7 +4,7 @@ const { getArticleById } = require("./articlesControllers")
 const { getComments } = require("./commentsControllers")
 const {postComment } = require('./commentsControllers')
 const { patchArticle } = require("./articlesControllers")
- 
+const {deleteComment} = require("./commentsControllers")
 
 module.exports = {
   getAllArticles,
@@ -12,5 +12,6 @@ module.exports = {
   getArticleById,
   getComments, 
   postComment,
-  patchArticle
+  patchArticle,
+  deleteComment
 };
