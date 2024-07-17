@@ -253,3 +253,43 @@ describe("POST comments", () => {
   })
 })
  
+
+// tests for updating articles with votes
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("updated article with status 200", () => {
+
+    //arr
+    const newVote = { inc_votes: 1 }; 
+    //act 
+    return request(app)
+    .patch("/api/articles/1")
+    .send(newVote)
+    .expect(200)
+    .then(({body}) => {
+      expect(body.article.votes).toBe(101)
+    })
+  })
+  test("returns 400 status if inc_votes is NaN", () => {
+    const newVote = {inc_votes: "one"}
+
+    return request(app)
+    .patch("/api/articles/1")
+    .send(newVote)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request")
+    })
+  })
+  test("returns 404 status if article does not exist", () => {
+    const newVote = { inc_votes: 1 };
+
+    return request(app)
+    .patch("/api/articles/99")
+    .send(newVote)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+  })
+})
