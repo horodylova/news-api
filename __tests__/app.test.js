@@ -149,8 +149,23 @@ describe('GET /api', () => {
           expect(Array.isArray(body.articles)).toBe(true);
         });
     });
+    test("should return article by id if no comments", () => {
+      return request(app)
+        .get('/api/articles/2')
+        .expect(200)
+        .then(({ body }) => {
+          expect(Number(body.article.comment_count)).toBe(0)
+        })
+    })
+    test("returns 200 status with current comment_count", () => {
+      return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Number(body.article.comment_count)).toBe(11)
+      })
+    })
   });
-  
 
  //tests for comments 
 
