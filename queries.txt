@@ -4,10 +4,10 @@ CREATE INDEX idx_comments_body
 ON comments (body);
 
 
+
 SELECT COUNT(*) AS comment_count
 FROM comments
 WHERE articles.article_id = comments.article_id;
-
 
 SELECT articles.author, articles.title, articles.article_id, articles.created_at, articles.votes, articles.article_img_url, 
 COUNT(body.comment_id) 
@@ -49,6 +49,22 @@ comment_count
     article_id: 1,
     created_at: 1582459260000,
   },
+
+ SELECT 
+articles.author, 
+articles.title, 
+articles.article_id, 
+articles.created_at, 
+articles.votes, 
+articles.article_img_url,
+articles.topic,
+COUNT(comments.comment_id) AS comment_count
+FROM articles 
+WHERE articles.article_id = comments.article_id
+LEFT JOIN comments ON articles.article_id = comments.article_id
+    
+    
+    ;
 
 
 `SELECT 
