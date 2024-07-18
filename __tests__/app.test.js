@@ -154,6 +154,14 @@ describe('sorting the articles', () => {
             expect(body.articles).toBeSortedBy("author");
         });
 });
+test("should change the sort order with an order query", () => {
+  return request(app)
+  .get('/api/articles?order=asc')
+  .expect(200)
+  .then(({body}) => {
+    expect(body.articles).toBeSortedBy('created_at', {ascending:true})
+  })
+})
 })
 
  //tests for comments 
