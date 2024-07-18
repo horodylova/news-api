@@ -1,3 +1,6 @@
+Render deployment: [https://news-api-1-jrxe.onrender.com/](https://news-api-1-jrxe.onrender.com/)
+
+
 Setup Instructions
 
 To set up the project, follow these steps:
