@@ -4,7 +4,7 @@ const { selectAllArticles, fetchArticleById , updateArticleVotes } = require('..
 function getAllArticles(request, response, next) {
 
     
-    const {sort_by} = request.query
+    const {sort_by, order} = request.query
 
     const validQueries = ['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'article_img_url', 'comment_count']
 
@@ -14,7 +14,7 @@ function getAllArticles(request, response, next) {
         return next({ status: 400, msg: "Invalid Query" });
     }
     
-    selectAllArticles(sort_by)
+    selectAllArticles(sort_by, order)
     .then((articles) => {
 
         response.status(200)

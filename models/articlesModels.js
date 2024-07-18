@@ -1,7 +1,7 @@
 const db = require("../db/connection")
 
 
-function selectAllArticles (sort_by = "created_at") {
+function selectAllArticles (sort_by = "created_at", order = 'desc') {
 
     let queryStr = `SELECT 
     articles.author, 
@@ -33,10 +33,12 @@ function selectAllArticles (sort_by = "created_at") {
     ORDER BY ${sort_by} 
     `;
 
-    if(sort_by === "created_at") {
+    if(sort_by === "created_at" && order === 'desc') {
       queryStr += `DESC`;
+    } else if(sort_by === "created_at" && order === "asc") {
+      queryStr += `ASC`
     }
-
+    
     return db.query(queryStr)
     .then((result) => {
        
