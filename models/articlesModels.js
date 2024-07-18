@@ -1,49 +1,52 @@
 const db = require("../db/connection")
 
 
-function selectAllArticles (sort_by = "created_at", order = 'desc') {
 
-    let queryStr = `SELECT 
-    articles.author, 
-    articles.title, 
-    articles.article_id, 
-    articles.created_at, 
-    articles.votes, 
-    articles.article_img_url,
-    articles.topic,
+function selectAllArticles(sort_by = "created_at", order, topic) {
+  let queryStr = `
+      SELECT 
+          articles.author, 
+          articles.title, 
+          articles.article_id, 
+          articles.created_at, 
+          articles.votes, 
+          articles.article_img_url,
+          articles.topic,
+          COUNT(comments.comment_id) AS comment_count
+      FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+  `;
 
-    COUNT(comments.body) 
+  const queryParams = [];
 
-    AS comment_count
-    FROM articles
+  if (topic) {
+      queryStr += `WHERE articles.topic = $1 `;
+      queryParams.push(topic);
+  }
 
-    LEFT JOIN comments 
-    ON articles.article_id = comments.article_id
+  queryStr += `
+      GROUP BY 
+          articles.author, 
+          articles.title, 
+          articles.article_id, 
+          articles.created_at, 
+          articles.votes, 
+          articles.article_img_url, 
+          articles.topic
+      ORDER BY ${sort_by} 
+  `;
 
-    GROUP BY 
 
-    articles.author, 
-    articles.title, 
-    articles.article_id, 
-    articles.created_at, 
-    articles.votes, 
-    articles.article_img_url, 
-    articles.topic
+  if(order === 'asc') {
+    queryStr += `ASC`;
+  } else{
+    queryStr += `DESC`
+  }
 
-    ORDER BY ${sort_by} 
-    `;
-
-    if(sort_by === "created_at" && order === 'desc') {
-      queryStr += `DESC`;
-    } else if(sort_by === "created_at" && order === "asc") {
-      queryStr += `ASC`
-    }
-    
-    return db.query(queryStr)
-    .then((result) => {
-       
-        return result.rows
-    })
+  return db.query(queryStr, queryParams)
+      .then((result) => {
+          return result.rows;
+      });
 }
 
 
