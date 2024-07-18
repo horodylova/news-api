@@ -1,28 +1,39 @@
 const { selectAllArticles, fetchArticleById , updateArticleVotes } = require('../models/articlesModels')
-
+const { checkTopicExists } = require("../models/checkcategoryExists")
 
 function getAllArticles(request, response, next) {
+    const { sort_by, order, topic } = request.query;
 
-    
-    const {sort_by, order} = request.query
-
-    const validQueries = ['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'article_img_url', 'comment_count']
-
+    const validQueries = ['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'article_img_url', 'comment_count'];
     const sortBy = sort_by || 'created_at';
 
     if (!validQueries.includes(sortBy)) {
         return next({ status: 400, msg: "Invalid Query" });
     }
-    
-    selectAllArticles(sort_by, order)
-    .then((articles) => {
 
-        response.status(200)
-        .send({articles})
-        
-    }).catch((error) => {
-        next(error)
-    })
+    if (topic) {
+        checkTopicExists(topic)
+            .then((topicExists) => {
+                if (!topicExists) {
+                    return Promise.reject({ status: 404, msg: "Not Found" });
+                }
+                return selectAllArticles(sortBy, order, topic);
+            })
+            .then((articles) => {
+                response.status(200).send({ articles });
+            })
+            .catch((error) => {
+                next(error);
+            });
+    } else {
+        selectAllArticles(sortBy, order)
+            .then((articles) => {
+                response.status(200).send({ articles });
+            })
+            .catch((error) => {
+                next(error);
+            });
+    }
 }
 
 

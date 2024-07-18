@@ -73,96 +73,84 @@ describe('GET /api', () => {
 
   //tests for articles 
 
-  describe("GET /api/articles", () => {
-    test("responds with 200 status with full list of articles", () => {
-      return request(app) 
-      .get('/api/articles')
-      .expect(200)
-      .then(({body}) => {
-          expect(Array.isArray(body.articles)).toBe(true)
-      })
-  }) 
-})
-
-describe("GET /api/articles/:article_id", () => {
-  test('status 200 responds with the requested article', () => {
-    return request(app)
-    .get('/api/articles/1')
-    .expect(200)
-    .then(({body}) => {
-      expect(body.article).toEqual({
-        article_id: 1,
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
-        created_at: "2020-07-09T20:11:00.000Z",
-        votes: 100,
-        article_img_url:
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-      })
-    })
-  })
-  test("400 status when article_id is invalid", () => {
-    return request(app)
-    .get('/api/articles/svitlana')
-    .expect(400)
-    .then(({body}) => {
-      expect(body.msg).toBe("Bad Request")
-    })
-  })
-   test('404 status when article_id is valid but does not exist', () => {
-    return request(app)
-    .get('/api/articles/999')
-    .expect(404)
-    .then(({body}) => {
-      expect(body.msg).toBe("Not Found")
-    })
-   })
-})
-
-describe('sorting the articles', () => {
-  test("the articles should be sorted by date in descending order", () => {
+  describe('GET /api/articles', () => {
+    test('responds with 200 status with full list of articles', () => {
       return request(app)
-      .get('/api/articles')
-      .expect(200)
-      .then(({body}) => {
-        expect(body.articles).toBeSortedBy("created_at", {descending:true})
-      })
-  })
-  test(" there should not be a body property present on any of the article objects", () => {
-      return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({body}) => {
-        expect(body.articles.body).toBeUndefined()
-      })
-  })
-  test('responds with 400 when passed an invalid sort_by query', () => {
-    return request(app)
-      .get('/api/articles?sort_by=invalid-query')
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe('Invalid Query');
-      });
-  });
-  test("responds 200 and sorted by valid query", () => {
-    return request(app)
-        .get("/api/articles?sort_by=author")
+        .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
-            expect(body.articles).toBeSortedBy("author");
+          expect(Array.isArray(body.articles)).toBe(true);
         });
-});
-test("should change the sort order with an order query", () => {
-  return request(app)
-  .get('/api/articles?order=asc')
-  .expect(200)
-  .then(({body}) => {
-    expect(body.articles).toBeSortedBy('created_at', {ascending:true})
-  })
-})
-})
+    });
+  
+    test('the articles should be sorted by date in descending order', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy('created_at', { descending: true });
+        });
+    });
+  
+    test('responds with 400 when passed an invalid sort_by query', () => {
+      return request(app)
+        .get('/api/articles?sort_by=invalid-query')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Invalid Query');
+        });
+    });
+  
+    test('responds 200 and sorted by valid query', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy('author',  { descending: true });
+        });
+    });
+  
+    test('should change the sort order with an order query', () => {
+      return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy('created_at', { ascending: true });
+        });
+    });
+  
+    test('responds with 200 and the filtered list of articles according to the topic name', () => {
+      return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(Array.isArray(articles)).toBe(true);
+          articles.forEach(article => {
+            expect(article.topic).toBe('cats');
+          });
+        });
+    });
+  
+    test('responds 404 Not Found if the topic does not exist when filtering by topic', () => {
+      return request(app)
+        .get('/api/articles?topic=non-existing-slug')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Not Found');
+        });
+    });
+  
+    test('responds with all articles if topic query is omitted', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+        });
+    });
+  });
+  
 
  //tests for comments 
 

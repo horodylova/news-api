@@ -24,4 +24,12 @@ function checkCommentExists(comment_id) {
     })
 }
 
-module.exports = {checkArticleExists, checkUserExists, checkCommentExists};
+function checkTopicExists (slug) {
+    return db
+    .query(`SELECT * FROM topics WHERE slug = $1`, [slug])
+    .then(({rows}) => {
+        return rows.length > 0;
+    })
+}
+
+module.exports = {checkArticleExists, checkUserExists, checkCommentExists, checkTopicExists};

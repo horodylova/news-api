@@ -88,3 +88,33 @@ an object in the form { inc_votes: newVote }.
 newVote will indicate how much the votes property in the database should be updated by, e.g.
 { inc_votes : 1 } would increment the current article's vote property by 1
 { inc_votes : -100 } would decrement the current article's vote property by 100
+
+
+(`SELECT 
+    articles.author, 
+    articles.title, 
+    articles.article_id, 
+    articles.created_at, 
+    articles.votes, 
+    articles.article_img_url,
+    articles.topic,
+
+    COUNT(comments.body) 
+
+    AS comment_count
+    FROM articles
+
+    LEFT JOIN comments 
+    ON articles.article_id = comments.article_id
+
+    GROUP BY 
+
+    articles.author, 
+    articles.title, 
+    articles.article_id, 
+    articles.created_at, 
+    articles.votes, 
+    articles.article_img_url, 
+    articles.topic
+
+   FILTER(WHERE topics.slug = $1)`, [slug])
