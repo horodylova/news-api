@@ -1,57 +1,42 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const endpoints = require("./endpoints.json");
-const {
-  getTopics,
-  getAllArticles,
-  getArticleById,
-  getComments,
-  postComment,
-  patchArticle,
-  deleteComment,
-  getUsers
-} = require("./controllers");
 
+const usersRouter = require("./routes/users-router")
+const articlesRouter = require("./routes/articles-router")
+const topicsRouter = require("./routes/topics-router");
+const commentsRouter = require("./routes/comments-router")
+
+const endpoints = require('./endpoints.json');
+ 
 app.use(express.json());
 
 app.get("/api", (request, response, next) => {
   response.status(200).send({ endpoints });
 });
 
-app.get("/api/topics", getTopics);
-
-app.get("/api/articles", getAllArticles);
-
-app.get("/api/articles/:article_id", getArticleById);
-
-app.get("/api/articles/:article_id/comments", getComments);
-
-app.get("/api/users", getUsers)
-
-app.post("/api/articles/:article_id/comments", postComment);
-
-app.patch("/api/articles/:article_id", patchArticle);
-
-app.delete("/api/comments/:comment_id", deleteComment);
+app.use('/api/users', usersRouter);
+app.use('/api/articles', articlesRouter);
+app.use("/api/topics", topicsRouter);
+app.use("/api/comments", commentsRouter)
 
 
 app.use((err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "23502" || err.code === "23502") {
-    return res.status(400).send({ msg: "Bad Request" });
+  if (err.code === '22P02' || err.code === '23502') {
+    return res.status(400).send({ msg: 'Bad Request' });
   }
   next(err);
 });
 
+
 app.use((req, res, next) => {
-  res.status(404).send({ message: "Not Found" });
+  res.status(404).send({ message: 'Not Found' });
 });
 
+
 app.use((err, req, res, next) => {
-  if (err.status) {
-    return res.status(err.status).send({ msg: err.msg });
-  }
-  console.log("500 cought");
-  res.status(500).send({ msg: "Internal Server Error" });
+  const status = err.status || 500;
+  const message = err.msg || 'Internal Server Error';
+  res.status(status).send({ msg: message });
 });
 
 module.exports = app;
