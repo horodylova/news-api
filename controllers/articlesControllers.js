@@ -1,5 +1,5 @@
-const { selectAllArticles, fetchArticleById , updateArticleVotes } = require('../models/articlesModels')
-const { checkTopicExists } = require("../models/checkcategoryExists")
+const { selectAllArticles, fetchArticleById , updateArticleVotes , postNewArticleModel} = require('../models/articlesModels')
+const { checkTopicExists, checkAuthorExists } = require("../models/checkcategoryExists")
 
 function getAllArticles(request, response, next) {
     const { sort_by, order, topic } = request.query;
@@ -69,4 +69,20 @@ function patchArticle(req, res, next) {
       });
   }
 
-module.exports = { getAllArticles , getArticleById, patchArticle}; 
+  function postNewArticle(request, response, next) {
+    const { author, title, body, topic, article_img_url } = request.body;
+  
+    Promise.all([checkAuthorExists(author), checkTopicExists(topic)])
+      .then(() => {
+        return postNewArticleModel(author, title, body, topic, article_img_url);
+      })
+      .then((article) => {
+        response.status(201).send({ article });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  }
+  
+
+module.exports = { getAllArticles , getArticleById, patchArticle, postNewArticle}; 

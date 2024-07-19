@@ -167,6 +167,43 @@ describe('GET /api', () => {
     })
   });
 
+  //tests for posting a new article 
+  
+  describe("POST /api/articles", () => {
+    test("returns 201 status when a new article created (with img)", () => {
+      const newArticle = {
+        author: 'icellusedkars',
+        title: "How my cat spends the weekend",
+        body: 'Weekends are a special time in our household, especially for my cat, Whiskers. As soon as the sun rises on Saturday morning, Whiskers is already at the window, soaking up the early morning rays and watching the world come to life. His mornings are spent lounging on his favorite perch, a cozy spot that offers the best view of the garden.',
+        topic: "cats",
+        article_img_url: 'https://media-be.chewy.com/wp-content/uploads/2016/05/20122949/signs-of-cat-pain-1024x615.jpg'
+      };
+      return request(app)
+        .post('/api/articles')
+        .send(newArticle)
+        .expect(201) 
+        .then((response) => {
+          expect(response.body.article).toMatchObject(newArticle);
+        });
+    });
+    test("returns 404 status when author does not exist", () => {
+      const newArticle = {
+        author: 'nonexistent_author',
+        title: "How my cat spends the weekend",
+        body: 'Weekends are a special time in our household, especially for my cat, Whiskers. As soon as the sun rises on Saturday morning, Whiskers is already at the window, soaking up the early morning rays and watching the world come to life. His mornings are spent lounging on his favorite perch, a cozy spot that offers the best view of the garden.',
+        topic: "cats",
+        article_img_url: 'https://media-be.chewy.com/wp-content/uploads/2016/05/20122949/signs-of-cat-pain-1024x615.jpg'
+};
+        return request(app)
+        .post('/api/articles')
+        .send(newArticle)
+        .expect(404)
+        .then((response) => {
+        expect(response.body.msg).toBe('Not Found');
+  });
+  });
+})
+
  //tests for comments 
 
  describe("GET comments for the article", () => {
