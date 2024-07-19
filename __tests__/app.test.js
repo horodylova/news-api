@@ -344,4 +344,27 @@ describe("GET /api/users", () => {
         });
       });
   });
+  test("GET the user by username", () => {
+    return request(app)
+    .get("/api/users/rogersop")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.user.length).toBe(1)
+      expect.objectContaining({
+        username: 'rogersop',
+        name: 'paul',
+        avatar_url:
+      'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+      })
+    })
+  })
+  test("returns 404 Not Found if user does not exist", () => {
+    return request(app)
+    .get("/api/users/svitlana")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+  })
 })
+

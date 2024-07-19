@@ -134,3 +134,5 @@ newVote will indicate how much the votes property in the database should be upda
     articles.topic
 
    FILTER(WHERE topics.slug = $1)`, [slug])
+
+   SELECT users.username, users.avatar_url, users.name FROM users WHERE users.username=$1, [username]
