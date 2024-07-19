@@ -7,6 +7,7 @@ const { patchArticle } = require("./articlesControllers")
 const {deleteComment} = require("./commentsControllers")
 const { getUsers } = require("./usersControllers")
 const { getTheUser } = require("./usersControllers")
+const { updateTheVotes } = require("./commentsControllers")
 
 module.exports = {
   getAllArticles,
@@ -17,5 +18,6 @@ module.exports = {
   patchArticle,
   deleteComment, 
   getUsers,
-  getTheUser
+  getTheUser,
+  updateTheVotes
 };

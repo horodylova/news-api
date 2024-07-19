@@ -305,6 +305,36 @@ describe("PATCH /api/articles/:article_id", () => {
   })
 })
 
+// tests for updating comments with votes
+
+describe("PATCH update the votes on a comment given the comment's comment_id", () => {
+  test("returns 200 status and updates comment when the number of votes increases +1", () => {
+    const newVote = { inc_votes: 1 }; 
+    return request(app)
+    .patch('/api/comments/1')
+    .send(newVote)
+    .expect(200)
+  })
+  test("returns 200 status and updates comment when the number of votes decreases -1", () => {
+    const newVote = { inc_votes: -1 }; 
+    return request(app)
+    .patch('/api/comments/1')
+    .send(newVote)
+    .expect(200)
+  })
+  test("returns 400 status if inc_votes is NaN", () => {
+    const newVote = {inc_votes: "one"}
+
+    return request(app)
+    .patch("/api/comments/1")
+    .send(newVote)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request")
+    })
+  })
+})
+
 //tests for deleting the comment 
 
 describe("DELETE the comment", () => {

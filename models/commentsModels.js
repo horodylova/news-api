@@ -1,3 +1,4 @@
+const { response } = require("../app");
 const db = require("../db/connection");
 
 function selectComments(article_id) {
@@ -45,6 +46,20 @@ function deleteCommentModel (comment_id) {
     return rows[0];
   })
 }
+function updateTheVotesModel (comment_id, inc_votes) {
+  
+  let queryStr = `UPDATE comments 
+  SET votes = votes+ $2
+  WHERE comment_id = $1 
+  RETURNING *;`
+  
+  return db
+  .query(queryStr, [comment_id, inc_votes])
+  .then(({rows}) => {
+    return rows;
+  })
+}
 
-module.exports = { selectComments, postCommentModel, deleteCommentModel };
+
+module.exports = { selectComments, postCommentModel, deleteCommentModel, updateTheVotesModel };
 
