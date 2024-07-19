@@ -101,4 +101,17 @@ function updateArticleVotes(article_id, inc_votes) {
     });
 }
 
-module.exports = { selectAllArticles, fetchArticleById, updateArticleVotes };
+function postNewArticleModel(author, title, body, topic, article_img_url) {
+  return db.query(
+    `INSERT INTO articles 
+    (author, title, body, topic, article_img_url, created_at, votes) 
+    VALUES ($1, $2, $3, $4, $5, NOW(), 0) 
+    RETURNING *`, 
+    [author, title, body, topic, article_img_url]
+  ).then((result) => {
+    return result.rows[0];
+  });
+}
+
+
+module.exports = { selectAllArticles, fetchArticleById, updateArticleVotes , postNewArticleModel};

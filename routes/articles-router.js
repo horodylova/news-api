@@ -1,5 +1,5 @@
 const express = require("express")
-const {getAllArticles, getArticleById, patchArticle, getComments, postComment} = require("../controllers")
+const {getAllArticles, getArticleById, patchArticle, getComments, postComment, postNewArticle} = require("../controllers")
 const router = express.Router()
 
 router
@@ -8,5 +8,6 @@ router
 .get('/:article_id/comments', getComments)
 .patch('/:article_id', patchArticle)
 .post('/:article_id/comments', postComment)
+.post('/', postNewArticle)
 
 module.exports = router;
