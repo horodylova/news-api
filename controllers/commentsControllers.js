@@ -1,4 +1,4 @@
-const { selectComments , postCommentModel , deleteCommentModel} = require("../models/commentsModels");
+const { selectComments , postCommentModel , deleteCommentModel, updateTheVotesModel} = require("../models/commentsModels");
 const {checkArticleExists, checkUserExists, checkCommentExists } = require("../models/checkcategoryExists");
 
 function getComments(request, response, next) {
@@ -57,8 +57,20 @@ function postComment(request, response, next) {
   .catch((error) => {
     next(error)
   })
+}
 
+  function updateTheVotes(request, response, next) {
+    const { comment_id } = request.params;
+    const { inc_votes } = request.body;
+
+    updateTheVotesModel(comment_id, inc_votes)
+    .then((comment) => {
+      response.status(200).send(comment)
+    }).catch((error) => {
+      next(error)
+    })
+  
  }
 
-module.exports = { getComments , postComment, deleteComment };
+module.exports = { getComments , postComment, deleteComment , updateTheVotes};
 
