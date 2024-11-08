@@ -16,7 +16,7 @@ afterAll(() => {
     return db.end()
 })
 
-///tests for api, including bad requests 
+///tests for api, including bad request, added get 
 
 describe('GET /api', () => {
   test('responds with a json detailing all available endpoints', () => {
@@ -28,8 +28,6 @@ describe('GET /api', () => {
       });
   });
 });
-
-
 
   describe("invalid endpoint", () => {
     test("responds with a 404 status and an arror message ehen given an endpoint that does nor exist", () => {
