@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+export PATH=$PATH:/Users/svetlanagorodilova/.nvm/versions/node/v17.9.1/bin
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm test
+/Users/svetlanagorodilova/.nvm/versions/node/v17.9.1/bin/npm test
